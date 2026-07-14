@@ -1,0 +1,33 @@
+name: Actualizar datos T-MEC (TPU + Tipo de Cambio)
+
+on:
+  schedule:
+    # Todos los lunes a las 09:00 UTC (~03:00 hora Querétaro)
+    - cron: "0 9 * * 1"
+  workflow_dispatch: {}   # permite correrlo manualmente desde la pestaña "Actions" en GitHub
+
+jobs:
+  actualizar-datos:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clonar repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Instalar dependencias
+        run: pip install -r requirements.txt
+
+      - name: Descargar y subir TPU
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: python scripts/fetch_tpu.py
+
+      - name: Descargar y subir tipo de cambio
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          BANXICO_TOKEN: ${{ secrets.BANXICO_TOKEN }}
+        run: python scripts/fetch_fx.py
