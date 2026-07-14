@@ -48,7 +48,7 @@ def descargar_tipo_cambio(dias_atras: int = 10) -> pd.DataFrame:
 
 
 def subir_a_supabase(df: pd.DataFrame):
-    engine = create_engine(DATABASE_URL)
+    engine = construir_engine()
     with engine.begin() as conn:
         for _, row in df.iterrows():
             conn.execute(text("""

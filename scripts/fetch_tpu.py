@@ -9,6 +9,7 @@ import io
 import requests
 import pandas as pd
 from sqlalchemy import create_engine, text
+from sqlalchemy.engine import URL
 
 TPU_URL = "https://www.matteoiacoviello.com/tpu_files/tpu_web_latest.xlsx"
 
@@ -49,7 +50,7 @@ def subir_a_supabase(df: pd.DataFrame, filas_recientes: int = 6):
     """Sube solo los últimos N meses (evita reescribir 60+ años cada corrida)."""
     df_reciente = df.sort_values("fecha").tail(filas_recientes)
 
-    engine = create_engine(DATABASE_URL)
+    engine = construir_engine()
     with engine.begin() as conn:
         for _, row in df_reciente.iterrows():
             conn.execute(text("""
