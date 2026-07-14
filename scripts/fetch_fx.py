@@ -11,10 +11,22 @@ import os
 import requests
 import pandas as pd
 from sqlalchemy import create_engine, text
+from sqlalchemy.engine import URL
 
 SERIE_FIX = "SF43718"  # Tipo de cambio pesos por dólar, serie FIX
 BANXICO_TOKEN = os.environ["BANXICO_TOKEN"]
-DATABASE_URL = os.environ["DATABASE_URL"]
+
+def construir_engine():
+    """Ver docstring equivalente en fetch_tpu.py."""
+    url = URL.create(
+        drivername="postgresql+psycopg2",
+        username=os.environ["DB_USER"],
+        password=os.environ["DB_PASSWORD"],
+        host=os.environ["DB_HOST"],
+        port=int(os.environ.get("DB_PORT", 5432)),
+        database=os.environ.get("DB_NAME", "postgres"),
+    )
+    return create_engine(url)
 
 
 def descargar_tipo_cambio(dias_atras: int = 10) -> pd.DataFrame:

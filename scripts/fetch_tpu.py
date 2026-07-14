@@ -12,7 +12,25 @@ from sqlalchemy import create_engine, text
 
 TPU_URL = "https://www.matteoiacoviello.com/tpu_files/tpu_web_latest.xlsx"
 
-DATABASE_URL = os.environ["DATABASE_URL"]
+
+def construir_engine():
+    """
+    Arma la URL de conexión por partes con sqlalchemy.engine.URL.create,
+    que codifica automáticamente cualquier caracter especial en la contraseña
+    (@, #, %, /, etc.).
+
+    Espera estas variables de entorno (GitHub Secrets o export local):
+        DB_USER, DB_PASSWORD, DB_HOST, DB_PORT (opcional, default 5432), DB_NAME (opcional, default postgres)
+    """
+    url = URL.create(
+        drivername="postgresql+psycopg2",
+        username=os.environ["DB_USER"],
+        password=os.environ["DB_PASSWORD"],
+        host=os.environ["DB_HOST"],
+        port=int(os.environ.get("DB_PORT", 5432)),
+        database=os.environ.get("DB_NAME", "postgres"),
+    )
+    return create_engine(url)
 
 
 def descargar_tpu() -> pd.DataFrame:
