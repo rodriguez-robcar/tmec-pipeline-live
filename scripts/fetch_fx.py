@@ -41,7 +41,6 @@ def descargar_tipo_cambio(dias_atras: int = 10) -> pd.DataFrame:
     fecha_fin = date.today()
     fecha_inicio = fecha_fin - timedelta(days=dias_atras) 
     
-
     url = (
         f"https://www.banxico.org.mx/SieAPIRest/service/v1/series/{SERIE_FIX}"
         f"/datos/{fecha_inicio.isoformat()}/{fecha_fin.isoformat()}"
@@ -55,8 +54,7 @@ def descargar_tipo_cambio(dias_atras: int = 10) -> pd.DataFrame:
     df["fecha"] = pd.to_datetime(df["fecha"], format="%d/%m/%Y")
     df["mxn_por_usd"] = pd.to_numeric(df["dato"], errors="coerce")
     df = df.dropna(subset=["mxn_por_usd"])
-    return df[["fecha", "mxn_por_usd"]]
-
+    return df[["fecha", "mxn_por_usd"]] # type: ignore
 
 def subir_a_supabase(df: pd.DataFrame):
     engine = construir_engine()

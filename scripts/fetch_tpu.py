@@ -66,6 +66,22 @@ def subir_a_supabase(df: pd.DataFrame, filas_recientes: int = 6):
 
 
 if __name__ == "__main__":
+    import sys
+ 
+    # Uso normal (semanal, vía cron): python fetch_tpu.py
+    #     -> sube solo los últimos 6 meses (rápido, evita reescribir 60+ años cada vez)
+    # Carga inicial de historial (correr UNA sola vez, a mano):
+    #     python fetch_tpu.py --backfill
+    #     -> sube todo el historial disponible desde 2015
+ 
+    hacer_backfill = "--backfill" in sys.argv
+ 
     df = descargar_tpu()
     print(f"Descargados {len(df)} meses de TPU. Último dato: {df.iloc[-1].to_dict()}")
-    subir_a_supabase(df)
+ 
+    if hacer_backfill:
+        df_desde_2015 = df[df["fecha"] >= "2015-01-01"]
+        print(f"Modo backfill: subiendo {len(df_desde_2015)} meses (desde 2015)...")
+        subir_a_supabase(df_desde_2015, filas_recientes=len(df_desde_2015)) # type: ignore
+    else:
+        subir_a_supabase(df)
