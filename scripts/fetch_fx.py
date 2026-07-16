@@ -30,10 +30,21 @@ def construir_engine():
 
 
 def descargar_tipo_cambio(dias_atras: int = 10) -> pd.DataFrame:
-    """Trae los datos más recientes (últimos N días hábiles disponibles)."""
+    """
+    Trae un RANGO de días (no solo el más reciente), para que la tabla
+    acumule historial diario real y no queden huecos entre corridas
+    semanales del pipeline.
+    """
+    
+    from datetime import date, timedelta
+
+    fecha_fin = date.today()
+    fecha_inicio = fecha_fin - timedelta(days=dias_atras) 
+    
+
     url = (
         f"https://www.banxico.org.mx/SieAPIRest/service/v1/series/{SERIE_FIX}"
-        f"/datos/oportuno"
+        f"/datos/{fecha_inicio.isoformat()}/{fecha_fin.isoformat()}"
     )
     headers = {"Bmx-Token": BANXICO_TOKEN}
     resp = requests.get(url, headers=headers, timeout=30)
