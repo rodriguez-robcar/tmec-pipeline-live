@@ -31,14 +31,14 @@ GitHub Actions (cron semanal, lunes 09:00 UTC)
     2. En SQL Editor, corre sql/schema.sql una sola vez.
     3. En Connect → Connection string → Transaction pooler, copia el string. De ahí sacas:
 
-        - DB_USER: postgres.<tu-project-ref>
+        - DB_USER: postgres.<project-ref>
         - DB_HOST: aws-0-<región>.pooler.supabase.com
         - DB_PORT: 6543
-        - DB_PASSWORD: la que definiste al crear el proyecto
+        - DB_PASSWORD: password del proyecto en Supabase
 
 2. Token de Banxico
 
-    En [banxico.org.mx/SieAPIRest/service/v1/token](https://www.banxico.org.mx/SieAPIRest/service/v1/token).
+    Se puede sacar en [banxico.org.mx/SieAPIRest/service/v1/token](https://www.banxico.org.mx/SieAPIRest/service/v1/token).
 
 3. GitHub Secrets
 
